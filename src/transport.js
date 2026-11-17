@@ -1,9 +1,25 @@
+export const boundedTransportToken = Symbol('boundedTransport');
+
+function assertSafeV1Path(pathname) {
+  if (!pathname.startsWith('/v1/')) return false;
+  if (pathname.includes('//') || pathname.includes('..')) return false;
+  const lower = pathname.toLowerCase();
+  if (/%2e|%2f|%5c|%00/.test(lower)) return false;
+  for (let i = 0; i < pathname.length; i++) {
+    if (pathname.charCodeAt(i) < 0x20) return false;
+  }
+  let decoded;
+  try { decoded = decodeURIComponent(pathname); } catch { return false; }
+  if (decoded.includes('..') || decoded.includes('\0') || decoded.includes('//')) return false;
+  return true;
+}
+
 /** Supply fetch explicitly; importing this module never enables network access. */
 export function createBoundedTransport(fetchImpl, {maxBytes = 5 * 1024 * 1024, timeoutMs = 10000} = {}) {
   if (typeof fetchImpl !== 'function' || !Number.isSafeInteger(maxBytes) || maxBytes < 1 || maxBytes > 10 * 1024 * 1024 || !Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 30000) throw new Error('Invalid transport configuration');
-  return async function transport(url, options = {}) {
+  const transport = async function boundedTransport(url, options = {}) {
     const target = new URL(url);
-    if (target.origin !== 'https://next-api.saturation.io' || !target.pathname.startsWith('/v1/') || target.username || target.password || target.hash || (options.method ?? 'GET') !== 'GET') throw new Error('Unsupported read-only destination');
+    if (target.origin !== 'https://next-api.saturation.io' || !assertSafeV1Path(target.pathname) || target.username || target.password || target.hash || (options.method ?? 'GET') !== 'GET') throw new Error('Unsupported read-only destination');
     const controller = new AbortController();
     const signal = options.signal ? AbortSignal.any([controller.signal, options.signal]) : controller.signal;
     const timer = setTimeout(()=>controller.abort(),timeoutMs);
@@ -55,4 +71,10 @@ export function createBoundedTransport(fetchImpl, {maxBytes = 5 * 1024 * 1024, t
       }
     }
   };
+  transport[boundedTransportToken] = true;
+  return transport;
+}
+
+export function isBoundedTransport(transport) {
+  return typeof transport === 'function' && transport[boundedTransportToken] === true;
 }

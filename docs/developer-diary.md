@@ -36,6 +36,12 @@ Fixed issues #2 and #3: canonical snapshots now hash supplied non-presentation p
 
 Validation: `npm test` passed all 46 tests locally, including offline bytes to reconciled hierarchy, revision comparison, and blocked discrepancy. No vendor credentials or network reads were used. Live discrepancies in issue #1 and website adoption in issue #4 remain separate; no production wiring or deployment is included. Stable counts and observed-field hashes do not prove vendor snapshot isolation or completeness of omitted scope metadata.
 
+## 2026-11-17 — Triage open issues #5–#10 and extend #1 synthetic regressions
+
+No new vendor calls. Landed transport path hardening, multi-workspace `authorize()`, bounded-transport enforcement on `createReadClient`, `createTrustedReviewContext()` for readiness gates, schema-evaluator `majorUnits` and 5 MiB cap alignment, `package-lock.json`, and CI `npm ci` / syntax / high-severity audit steps addressing issues #5–#10 without duplicating the separate open PR #11 intent on main. Added wholly synthetic issue #1 regression fixtures for reconciled account trees with mismatched project grand totals and for actual line values without document project totals; full vendor semantics remain unresolved.
+
+Validation: `npm ci`, `npm run lint:syntax`, `npm audit --audit-level=high`, and `npm test` passed locally (54/54 on Node 22). No credentials, network reads, or production wiring. Issue #1 still requires documented vendor aggregation semantics and an owner decision before full demo import can succeed.
+
 ## 2026-11-17 — Record current optional host release
 
 Added `docs/host-release-status.md` linking the deployed TakeAgent CSV/Excel release and explaining the division between shared host file handling and this adapter. Preserved optional installation, no-new-configuration behavior and vendor-access limitations. Refetched origin and verified the existing adapter source was already synchronized. The complete repository suite passed 46/46 tests. This commit changes documentation only; no adapter or deployment change is claimed.
