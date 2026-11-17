@@ -2,6 +2,8 @@
 
 Private development repository for [TakeAgent issue #57](https://github.com/jongos/takeagent/issues/57). This is a synthetic-tested development library, not a deployed integration or completed pilot. [Machine-readable status](integration-manifest.json): live access disabled.
 
+An authorized [personal developer trial evaluation](docs/personal-schema-evaluation.md) verified GET access and six-page transaction ingestion against the vendor's synthetic demo. Full budget import correctly remains blocked by grand-total and missing-phase-total gaps. This does not establish corporate or commercial entitlement.
+
 Run `npm test` with Node 22+. No dependencies, secrets, vendor account, or network are needed.
 
 `src/client.js` implements a bounded GET-only client for identity, selected-project budget totals, and paginated transactions. The host must supply a transport; there is no default live network access. Identity is rechecked on each operation, redirects are blocked, errors exclude provider bodies, and partial/duplicate/cross-project pages fail. `disconnect()` invalidates this in-memory client.

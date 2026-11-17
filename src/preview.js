@@ -10,7 +10,8 @@ export function previewTotals(payload, {workspaceId, projectId, revision, phaseM
   const costs = Object.fromEntries(fields.map(field => [field, null]));
   const used = new Set(); const currencies = new Set();
   for (const [field, phase] of Object.entries(phaseMap)) {
-    if (!fields.includes(field) || typeof phase !== 'string' || used.has(phase) || !Object.hasOwn(payload.totals, phase)) throw new Error('Ambiguous phase mapping');
+    if (!fields.includes(field) || typeof phase !== 'string' || used.has(phase)) throw new Error('Ambiguous phase mapping');
+    if (!Object.hasOwn(payload.totals, phase)) throw new Error('Mapped phase has no project total; independent reconciliation is required');
     const value = payload.totals[phase];
     if (!value || !Number.isFinite(value.amount) || !/^[A-Z]{3}$/.test(value.currency)) throw new Error('Invalid phase amount');
     used.add(phase); currencies.add(value.currency);

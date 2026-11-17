@@ -5,10 +5,10 @@ const id = value => {
 };
 
 // No default network transport: the spike is inert until a host supplies one.
-export function createReadClient({ token, workspaceId, projectId, transport, maxPages = 20 }) {
+export function createReadClient({ token, workspaceId, projectId, transport, maxPages = 20, pageSize = 100 }) {
   id(workspaceId); id(projectId);
   if (typeof token !== 'string' || !token || /[\r\n]/.test(token)) throw new Error('Invalid token');
-  if (typeof transport !== 'function' || !Number.isInteger(maxPages) || maxPages < 1 || maxPages > 100) throw new Error('Invalid configuration');
+  if (typeof transport !== 'function' || !Number.isInteger(maxPages) || maxPages < 1 || maxPages > 100 || !Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) throw new Error('Invalid configuration');
   let connected = true;
   const controller = new AbortController();
   async function get(path) {
@@ -46,10 +46,10 @@ export function createReadClient({ token, workspaceId, projectId, transport, max
       const rows = []; const ids = new Set(); const cursors = new Set();
       let cursor;
       for (let pageNumber = 0; pageNumber < maxPages; pageNumber++) {
-        const query = new URLSearchParams({projectId, limit: '100', withCount: 'true', sort: 'createdAt', order: 'asc'});
+        const query = new URLSearchParams({projectId, limit: String(pageSize), withCount: 'true', sort: 'createdAt', order: 'asc'});
         if (cursor) query.set('cursor', cursor);
         const page = await get(`/transactions?${query}`);
-        if (!Array.isArray(page.data) || page.data.length > 100) throw new Error('Invalid page');
+        if (!Array.isArray(page.data) || page.data.length > pageSize) throw new Error('Invalid page');
         for (const row of page.data) {
           id(row.id);
           if (row.projectId !== projectId) throw new Error('Project mismatch or missing project identity');

@@ -1,13 +1,13 @@
 # Pilot blockers
 
-Status: development; live access disabled. No vendor contact, credentials, real financial records, deployment or live API validation has occurred.
+Status: development; production live access disabled. An explicitly authorized personal developer trial evaluation has now verified GET access and synthetic-demo transaction pagination; see [schema evaluation](personal-schema-evaluation.md). No corporate/customer data, API writes, vendor contact or deployment was involved. Full budget import remains blocked by observed grand-total reconciliation and missing-phase-total gaps.
 
 ## Vendor-dependent
 
 1. **API entitlement/commercial terms.** Marketing and 3.0 support pages disagree on plan eligibility. Obtain account-specific confirmation before a live pilot.
 2. **Least privilege.** Current authentication docs describe workspace-bound personal tokens inheriting user permissions. Establish a read-only role/key route or explicitly assess remaining credential privileges. GET-only code does not narrow a credential.
 3. **Computed fringe semantics and overlap.** OpenAPI exposes account, line, credit and fringe computed records, but the schema alone does not prove how standalone fringe rows overlap account totals in every budget. The supported reconciliation profile rejects fringe records rather than guessing. Similarly, do not add transaction/PO amounts to actual phases without validated overlap semantics.
-4. **Authorized synthetic vendor project.** Validate real response schemas, source revision stability, permissions, rate limits and revocation using synthetic records before representing this as live compatible.
+4. **Observed grand-total semantics.** Personal demo account subtotals reconcile but estimate root sums do not match project totals. Actual/rollup totals are absent from budget documents even with phase selection. Clarify aggregation semantics and a coherent total-source contract before accepting full imports. Basic read schemas and pagination are now verified; source revision stability, permissions, rate limits and revocation still need scoped validation.
 
 ## User decisions/input
 

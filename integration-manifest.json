@@ -11,8 +11,9 @@
     {"category": "vendor", "id": "api-entitlement", "summary": "Confirm customer API entitlement and commercial terms; public plan guidance differs."},
     {"category": "vendor", "id": "credential-scope", "summary": "Confirm a least-privilege credential route; documented personal tokens inherit user permissions."},
     {"category": "vendor", "id": "fringe-overlap", "summary": "Validate computed fringe rollup semantics and actual/commitment overlap with a synthetic vendor project."},
+    {"category": "vendor", "id": "observed-grand-totals", "summary": "Personal demo account subtotals reconcile, but estimate root sums differ from grand totals; actual/rollup grand totals are missing from budget documents."},
     {"category": "user", "id": "pilot-mapping", "summary": "Select authorized workspace/project and review phase meanings, period/currency basis and intended TakeAgent project."},
     {"category": "engineering", "id": "host-pilot", "summary": "Integrate authenticated host authorization, token vault, preview UI, retention/deletion and finance-review contract before enabling live use."}
   ],
-  "documentation": {"blockers": "docs/blockers.md", "hostContract": "docs/host-contract.md", "capabilities": "docs/capabilities.md"}
+  "documentation": {"blockers": "docs/blockers.md", "hostContract": "docs/host-contract.md", "capabilities": "docs/capabilities.md", "personalSchemaEvaluation": "docs/personal-schema-evaluation.md"}
 }

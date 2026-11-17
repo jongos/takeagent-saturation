@@ -62,3 +62,9 @@ test('offsetting account changes appear even when project totals are unchanged',
   assert.equal(result.changes.length,0); assert.equal(result.accountChanges.length,2);
   assert.deepEqual(result.accountChanges.map(change=>change.sourceLineId),['credit','line']);
 });
+test('visible phase line values without a project total stay blocked, never zero-filled',()=>{
+  const document=fixture(); document.phases.push({id:'actual',isHidden:false});
+  for(const row of document.lines) row.values.actual=value(0);
+  assert.throws(()=>reconcileBudgetDocument(document,{...context,phaseMap:{actuals:'actual'}}),/Mapped phase has no project total/);
+  assert.equal(Object.hasOwn(document.totals,'actual'),false);
+});

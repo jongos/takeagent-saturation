@@ -31,3 +31,11 @@ test('transport errors exclude provider secrets',async()=>{
   const client=createReadClient({workspaceId:'ws_test',projectId:'prj_test',token:'synthetic',transport:async()=>{throw new Error('private token');}});
   await assert.rejects(client.budgetTotals(),error=>error.message==='Transport failure');
 });
+test('configured page size is bounded and enforced against responses',async()=>{
+  for (const pageSize of [0,101,1.5]) assert.throws(()=>createReadClient({workspaceId:'ws_test',projectId:'prj_test',token:'synthetic',transport:async()=>{},pageSize}),/configuration/);
+  let count=0; const urls=[];
+  const client=createReadClient({workspaceId:'ws_test',projectId:'prj_test',token:'synthetic',pageSize:1,transport:async url=>{
+    urls.push(url); count++; return {ok:true,json:async()=>count===1?me:{data:[row,{...row,id:'second'}]}};
+  }});
+  await assert.rejects(client.transactions(),/Invalid page/); assert.match(urls[1],/limit=1&/);
+});
