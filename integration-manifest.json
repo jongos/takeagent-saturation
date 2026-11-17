@@ -6,7 +6,7 @@
   "liveEnabled": false,
   "sourceIssue": "https://github.com/jongos/takeagent/issues/57",
   "repository": "https://github.com/jongos/takeagent-saturation",
-  "capabilities": ["read-only-injected-transport", "byte-and-time-bounded-json-transport", "workspace-project-scope-checks", "bounded-transaction-pagination", "budget-phase-preview", "account-line-credit-reconciliation", "canonical-cost-snapshot", "revision-comparison", "synthetic-fixtures"],
+  "capabilities": ["read-only-injected-transport", "byte-and-time-bounded-json-transport", "workspace-project-scope-checks", "bounded-transaction-pagination", "budget-phase-preview", "account-line-credit-reconciliation", "canonical-cost-snapshot", "typed-review-readiness", "bounded-offline-json-review", "revision-comparison", "synthetic-fixtures"],
   "blockers": [
     {"category": "vendor", "id": "api-entitlement", "summary": "Confirm customer API entitlement and commercial terms; public plan guidance differs."},
     {"category": "vendor", "id": "credential-scope", "summary": "Confirm a least-privilege credential route; documented personal tokens inherit user permissions."},
@@ -15,5 +15,5 @@
     {"category": "user", "id": "pilot-mapping", "summary": "Select authorized workspace/project and review phase meanings, period/currency basis and intended TakeAgent project."},
     {"category": "engineering", "id": "host-pilot", "summary": "Integrate authenticated host authorization, token vault, preview UI, retention/deletion and finance-review contract before enabling live use."}
   ],
-  "documentation": {"blockers": "docs/blockers.md", "hostContract": "docs/host-contract.md", "capabilities": "docs/capabilities.md", "personalSchemaEvaluation": "docs/personal-schema-evaluation.md"}
+  "documentation": {"blockers": "docs/blockers.md", "hostContract": "docs/host-contract.md", "capabilities": "docs/capabilities.md", "personalSchemaEvaluation": "docs/personal-schema-evaluation.md", "readinessApi": "docs/readiness-api.md"}
 }

@@ -10,6 +10,8 @@ Only after those checks, load the server-side token, construct `createReadClient
 
 ## Reconciliation boundary
 
+Prefer the package's `prepareBudgetReview(document, trustedContext)` or bounded offline `reviewBudgetDocumentBytes(bytes, trustedContext)` entry described in [readiness API](readiness-api.md). Supply server-reviewed source/phase assertions and the authorized project's expected currency. Blocked results contain no partial preview; a successful diagnostic transaction read must not override a blocker. A ready result still has `canApply: false` and `financialAcceptance: false`.
+
 Pass the complete unfiltered response to `reconcileBudgetDocument(document, context)` where context contains server-resolved `workspaceId`, `projectId`, reviewed `phaseMap`, immutable `revision`, `importedAt` and trusted server `now`. A full document is a single read, avoiding joins across drifting pagination for account reconciliation. `computedAt` is a calculation timestamp, not assumed to be a vendor revision ID. The host must assign an immutable import revision and store its source fingerprint.
 
 The supported profile is `saturation-budget-document-account-line-credit-v1`. It verifies unique IDs, complete acyclic parent relationships, depth, visible mapped phases, one currency, exact parent/child subtotals and project totals. Amounts use major currency units, compared exactly to four decimals without rounding. Unsupported line types, precision, filtered selections, missing values and mismatches reject the preview. Missing mapped categories remain null; unknown does not mean zero. A reconciled hierarchy is not proof of accounting completeness or correct phase meanings.

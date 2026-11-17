@@ -2,6 +2,8 @@
 
 Status: development; production live access disabled. An explicitly authorized personal developer trial evaluation has now verified GET access and synthetic-demo transaction pagination; see [schema evaluation](personal-schema-evaluation.md). No corporate/customer data, API writes, vendor contact or deployment was involved. Full budget import remains blocked by observed grand-total reconciliation and missing-phase-total gaps.
 
+Revisit the observed discrepancy in [GitHub issue #1](https://github.com/jongos/takeagent-saturation/issues/1). Supported development can continue through the typed readiness/offline entry without accepting that demo as a reconciled financial snapshot.
+
 ## Vendor-dependent
 
 1. **API entitlement/commercial terms.** Marketing and 3.0 support pages disagree on plan eligibility. Obtain account-specific confirmation before a live pilot.

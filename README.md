@@ -4,6 +4,8 @@ Private development repository for [TakeAgent issue #57](https://github.com/jong
 
 An authorized [personal developer trial evaluation](docs/personal-schema-evaluation.md) verified GET access and six-page transaction ingestion against the vendor's synthetic demo. Full budget import correctly remains blocked by grand-total and missing-phase-total gaps. This does not establish corporate or commercial entitlement.
 
+The [discrepancy is tracked in issue #1](https://github.com/jongos/takeagent-saturation/issues/1). Development continues through the supported [readiness API](docs/readiness-api.md): parsed-document and bounded offline JSON entries return stable blockers or a minimized reconciled preview. Neither successful reads nor a ready preview imply financial acceptance or permission to apply changes.
+
 Run `npm test` with Node 22+. No dependencies, secrets, vendor account, or network are needed.
 
 `src/client.js` implements a bounded GET-only client for identity, selected-project budget totals, and paginated transactions. The host must supply a transport; there is no default live network access. Identity is rechecked on each operation, redirects are blocked, errors exclude provider bodies, and partial/duplicate/cross-project pages fail. `disconnect()` invalidates this in-memory client.
