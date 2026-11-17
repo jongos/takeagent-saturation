@@ -38,6 +38,17 @@ test('redirects, non-JSON and invalid encoding fail without leaking bodies',asyn
   const redirected=json({}); Object.defineProperty(redirected,'redirected',{value:true});
   await assert.rejects(createBoundedTransport(async()=>redirected)(url),/redirects/);
 });
+test('encoded traversal, doubled slashes, NUL and dot-segments are rejected',async()=>{
+  const transport=createBoundedTransport(async()=>json({}));
+  const blocked=[
+    'https://next-api.saturation.io/v1/foo/..%2f..%2fadmin',
+    'https://next-api.saturation.io/v1/me%00',
+    'https://next-api.saturation.io/v1/foo//bar',
+    'https://next-api.saturation.io/v1/%2e%2e/admin',
+    'https://next-api.saturation.io/v1/foo%2fbar',
+  ];
+  for (const target of blocked) await assert.rejects(transport(target),/destination/);
+});
 test('HTTP failures expose status only; fetch/stream errors are redacted',async()=>{
   const failed=await createBoundedTransport(async()=>new Response('private',{status:401}))(url);
   assert.equal(failed.status,401); await assert.rejects(failed.json(),/not exposed/);
