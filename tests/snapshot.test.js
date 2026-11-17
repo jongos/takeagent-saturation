@@ -68,3 +68,26 @@ test('visible phase line values without a project total stay blocked, never zero
   assert.throws(()=>reconcileBudgetDocument(document,{...context,phaseMap:{actuals:'actual'}}),/Mapped phase has no project total/);
   assert.equal(Object.hasOwn(document.totals,'actual'),false);
 });
+
+test('phase scope digest captures filters, missing values and future semantic fields',()=>{
+  const source=fixture(); source.phases[0].actualDateStart='2026-01-01';
+  const first=reconcileBudgetDocument(source,context);
+  for (const mutate of [p=>p.actualDateStart='2026-11-01',p=>p.actualStatuses=['approved'],p=>p.futureFilter={enabled:true},p=>delete p.actualDateStart,p=>p.actualDateStart=null]) {
+    const changed=structuredClone(source); mutate(changed.phases[0]);
+    const next=reconcileBudgetDocument(changed,{...context,revision:'rev_2'});
+    assert.notEqual(first.fingerprint,next.fingerprint);
+    assert.throws(()=>compareSnapshots(first,next),/reporting scope/);
+  }
+});
+test('phase scope key ordering is stable, presentation ignored, private values never retained',()=>{
+  const source=fixture(); source.phases[0].customFilter={b:2,a:'private-contact'};
+  const first=reconcileBudgetDocument(source,context);
+  source.phases[0].customFilter={a:'private-contact',b:2}; source.phases[0].name='private-name';
+  const next=reconcileBudgetDocument(source,context);
+  assert.equal(first.fingerprint,next.fingerprint);
+  assert.equal(compareSnapshots(first,next).status,'duplicate');
+  assert.equal(JSON.stringify(next).includes('private-'),false);
+  assert.equal(next.snapshot.phaseScopes.estimate.policy,'observed-fields-only-v1');
+  const legacy=structuredClone(first); delete legacy.snapshot.phaseScopes;
+  assert.throws(()=>compareSnapshots(legacy,next),/unavailable/);
+});

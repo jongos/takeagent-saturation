@@ -4,6 +4,22 @@ import {rejectBudget} from './errors.js';
 import {majorUnits as units} from './money.js';
 import {timestamp} from './dates.js';
 
+// Hash all supplied non-presentation fields, including future vendor filters.
+// Omitted fields remain unknown: no default scope or completeness is inferred.
+const presentationFields = new Set(['id','name','alias','color','sort','isHidden','displayDecimals']);
+function canonical(value, depth = 0) {
+  if (depth > 32) rejectBudget('PHASE_UNAVAILABLE','Phase definition exceeds supported depth');
+  if (value === null || typeof value === 'string' || typeof value === 'boolean') return value;
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (Array.isArray(value)) return value.map(item => canonical(item, depth + 1));
+  if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map(key => [key,canonical(value[key], depth + 1)]));
+  rejectBudget('PHASE_UNAVAILABLE','Invalid phase definition');
+}
+function phaseScope(record) {
+  const definition = Object.fromEntries(Object.keys(record).filter(key => !presentationFields.has(key)).sort().map(key => [key,canonical(record[key])]));
+  return {policy:'observed-fields-only-v1',definitionDigest:createHash('sha256').update(JSON.stringify(definition)).digest('hex')};
+}
+
 const identifier = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value);
 
 /** Full unfiltered BudgetDocument profile; account/line/credit only. */
@@ -21,10 +37,11 @@ export function reconcileBudgetDocument(document, context) {
     if (!phase || !identifier(phase.id) || phaseIds.has(phase.id)) rejectBudget('PHASE_UNAVAILABLE','Invalid or duplicate phase');
     phaseIds.add(phase.id);
   }
-  for (const phase of phases) {
+  const phaseScopes = {};
+  for (const phase of [...phases].sort()) {
     const record = document.phases.find(p => p.id === phase);
     if (!record || record.isHidden !== false) rejectBudget('PHASE_UNAVAILABLE','Mapped phase is missing or hidden');
-    // Phase definitions require explicit human review in the host, including actual filters.
+    phaseScopes[phase] = phaseScope(record);
     units(document.totals[phase].amount);
   }
   const byId = new Map();
@@ -72,7 +89,7 @@ export function reconcileBudgetDocument(document, context) {
       return [field,phase ? {amount:row.values[phase].amount,currency:row.values[phase].currency,unit:'major',sourcePhaseId:phase} : null];
     }))
   }));
-  const snapshot = {...preview.snapshot, schemaVersion:'1.0', sourceBudgetId:document.id, amountUnit:'major', accounts,
+  const snapshot = {...preview.snapshot, schemaVersion:'1.1', phaseScopes, sourceBudgetId:document.id, amountUnit:'major', accounts,
     reconciliation:{status:'reconciled',profile:'saturation-budget-document-account-line-credit-v1',scope:'Mapped phase totals and every parent-child account subtotal',transactionOverlapVerified:false}};
   const fingerprint = createHash('sha256').update(JSON.stringify(snapshot)).digest('hex');
   return {...preview,snapshot,fingerprint,importedAt:new Date(context.importedAt).toISOString(),reconciliation:snapshot.reconciliation,
@@ -86,6 +103,7 @@ export function compareSnapshots(previous, next) {
     if ((before?.sourcePhaseId ?? null) !== (after?.sourcePhaseId ?? null)) throw new Error('Phase mapping changed; review a new baseline');
     if ((before?.currency ?? null) !== (after?.currency ?? null) || before?.unit !== after?.unit) throw new Error('Currency or unit changed; review a new baseline');
   }
+  if (!previous.snapshot.phaseScopes || !next.snapshot.phaseScopes || JSON.stringify(previous.snapshot.phaseScopes) !== JSON.stringify(next.snapshot.phaseScopes)) throw new Error('Phase reporting scope changed or unavailable; review a new baseline');
   if (next.snapshot.asOf < previous.snapshot.asOf) throw new Error('Older snapshot cannot replace newer evidence');
   if (previous.fingerprint === next.fingerprint) return {status:'duplicate',changes:[],accountChanges:[],financePlanMutation:false};
   if (previous.snapshot.revision === next.snapshot.revision) throw new Error('Revision conflict');

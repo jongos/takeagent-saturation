@@ -38,3 +38,25 @@ Issue messages and next steps are static and omit imported descriptions, source 
 - `compareSnapshots` compares only trusted server-created reconciled previews. It is not an input authentication or validation entry. Currency and phase-mapping changes require a new reviewed baseline.
 
 No host persistence, vendor API writes, commercial access decision or production activation is added by these APIs.
+
+## Phase scope and pagination policy (schema 1.1)
+
+Canonical snapshots include `phaseScopes`, keyed by mapped source phase ID. Each entry contains `policy: observed-fields-only-v1` and a SHA-256 definition digest. All supplied phase fields except presentation/identity fields (`id`, `name`, `alias`, `color`, `sort`, `isHidden`, `displayDecimals`) enter the digest, including unknown future fields. Nested object keys sort deterministically; arrays preserve order conservatively. Raw filter/contact values are not emitted. Missing and null differ. Omitted metadata remains unknown: this digest does not establish complete vendor scope, and the host must independently review phase semantics. Never fill omitted filters with guessed defaults. Changed observed scope, or a legacy snapshot lacking scope metadata, requires a new reviewed baseline. Digests are integrity metadata, not anonymization guarantees; keep results tenant-scoped.
+
+Diagnostic transaction pagination locks the first reported count and rejects later changes. Later omission cannot erase it; the terminal collected count must match. Entirely absent counts remain supported as cursor-only diagnostic reads, without a completeness or snapshot-isolation guarantee. A stable count cannot detect offsetting concurrent changes. No partial collection is returned on errors.
+
+## Offline host example
+
+`examples/synthetic-budget.json` is an invented full account/line/credit document, not a vendor export. The host can pass its UTF-8 bytes to `reviewBudgetDocumentBytes(bytes, context)` from the package root. The library ceiling is 5 MiB; apply a smaller platform input limit and independently bound rendered/returned output.
+
+```js
+const context = {
+  workspaceId: 'synthetic_workspace', projectId: 'synthetic_project', revision: 'r1',
+  importedAt: '2026-11-17T10:00:00Z', now: new Date('2026-11-17T11:00:00Z'),
+  phaseMap: {originalBudget: 'estimate'}, expectedCurrency: 'USD',
+  sourceScopeReviewed: true, phaseMappingReviewed: true
+};
+const result = reviewBudgetDocumentBytes(bytes, context);
+```
+
+In a real host, derive authorized workspace/project/currency and current timestamps on the server; review flags require a deliberate mapping review and are not authorization. Do not treat this example's fixed clock or synthetic project as real provenance. Successful results are `ready-for-review`, with `preview.snapshot.costs` and `accounts`; missing categories remain null. Blocked results have `preview: null`. `financialAcceptance` and `canApply` remain false. No credential, network, or vendor account is required. Run `npm test` for the complete synthetic bytes → reconciliation → revision → discrepancy flow.

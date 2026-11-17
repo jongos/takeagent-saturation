@@ -44,7 +44,7 @@ export function createReadClient({ token, workspaceId, projectId, transport, max
     async transactions() {
       await authorize();
       const rows = []; const ids = new Set(); const cursors = new Set();
-      let cursor;
+      let cursor; let expectedCount;
       for (let pageNumber = 0; pageNumber < maxPages; pageNumber++) {
         const query = new URLSearchParams({projectId, limit: String(pageSize), withCount: 'true', sort: 'createdAt', order: 'asc'});
         if (cursor) query.set('cursor', cursor);
@@ -59,9 +59,14 @@ export function createReadClient({ token, workspaceId, projectId, transport, max
           // Minimize data: no contacts, payroll fields, descriptions or bank details.
           rows.push({id: row.id, projectId, amount: {amount: row.amount.amount, currency: row.amount.currency, unit: 'minor'}});
         }
-        if (page.count !== undefined && (!Number.isSafeInteger(page.count) || page.count < rows.length)) throw new Error('Invalid count');
+        if (page.count !== undefined) {
+          if (!Number.isSafeInteger(page.count) || page.count < 0) throw new Error('Invalid count');
+          if (expectedCount !== undefined && page.count !== expectedCount) throw new Error('Transaction collection changed during pagination');
+          expectedCount = page.count;
+        }
+        if (expectedCount !== undefined && expectedCount < rows.length) throw new Error('Invalid count');
         if (page.nextCursor === undefined || page.nextCursor === null) {
-          if (page.count !== undefined && page.count !== rows.length) throw new Error('Incomplete transaction collection');
+          if (expectedCount !== undefined && expectedCount !== rows.length) throw new Error('Incomplete transaction collection');
           return rows;
         }
         if (typeof page.nextCursor !== 'string' || !page.nextCursor || page.nextCursor.length > 4096 || cursors.has(page.nextCursor)) throw new Error('Invalid or repeated cursor');
