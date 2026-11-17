@@ -22,7 +22,7 @@ Status: development; live access disabled. No vendor contact, credentials, real 
 - Preview UI and approved import persistence with optimistic concurrency; immutable source evidence and tenant-bound duplicate index.
 - Vendor fixtures for fringe/FX/PO overlap before expanding the supported profile. Unsupported precision above four decimals is currently rejected.
 - Account-level downstream finance-review mapping. Cost overruns alone do not establish funding or cash-timing gaps.
-- Production retention, token deletion, cancellation on disconnect, bounded response size/transport enforcement and approved retry policy. Injected transports must honor abort signals and redirect prohibition.
+- Production retention, durable token deletion and approved retry policy. Use the supplied bounded transport; any custom replacement must enforce the same byte/deadline, abort and redirect restrictions.
 - Browser, cross-tenant and real-host end-to-end validation. Library tests do not certify these missing host controls.
 
 Not blocking local development: the library, exact hierarchy reconciliation, scope checks, synthetic tests, revision comparison and integration metadata are implemented without vendor credentials.
