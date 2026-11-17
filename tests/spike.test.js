@@ -2,10 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createReadClient} from '../src/client.js';
 import {previewTotals} from '../src/preview.js';
+import {syntheticTransport} from './helpers.js';
 const identity = {workspaces:[{workspaceId:'ws_test'}]};
 function setup(responses, extra = {}) {
   const calls = [];
-  const transport = async (url, options) => { calls.push({url, options}); const body = responses.shift(); return {ok: !body.status, status: body.status ?? 200, json: async () => body}; };
+  const transport = syntheticTransport(async (url, options) => {
+    calls.push({url, options});
+    const body = responses.shift();
+    if (body?.status) return {status: body.status, ok: false};
+    return {body};
+  });
   return {calls, client:createReadClient({token:'synthetic',workspaceId:'ws_test',projectId:'prj_test',transport,...extra})};
 }
 const row = id => ({id, projectId:'prj_test',amount:{amount:-10,currency:'USD'},bank:'excluded'});
@@ -19,6 +25,18 @@ test('GET-only scoped pagination minimizes fields and preserves credits', async 
 test('wrong workspace stops before project read', async () => {
   const {client,calls} = setup([{workspaces:[{workspaceId:'other'}]}]);
   await assert.rejects(client.budgetTotals(),/Workspace/); assert.equal(calls.length,1);
+});
+test('matching workspace succeeds when the account has multiple workspaces', async () => {
+  const {client,calls} = setup([{workspaces:[{workspaceId:'other'},{workspaceId:'ws_test'}]},{totals:{}}]);
+  await client.budgetTotals();
+  assert.equal(calls.length,2);
+});
+test('wrong workspace is rejected when it is not among several workspaces', async () => {
+  const {client,calls} = setup([{workspaces:[{workspaceId:'alpha'},{workspaceId:'beta'}]}]);
+  await assert.rejects(client.budgetTotals(),/Workspace/); assert.equal(calls.length,1);
+});
+test('unbounded custom transport is rejected at construction', () => {
+  assert.throws(()=>createReadClient({token:'synthetic',workspaceId:'ws_test',projectId:'prj_test',transport:async()=>({ok:true,json:async()=>({})})}),/configuration/);
 });
 test('wrong project or missing identity rejects all rows', async () => {
   for (const projectId of ['other',undefined]) {

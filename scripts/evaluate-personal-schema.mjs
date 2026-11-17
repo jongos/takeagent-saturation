@@ -3,19 +3,19 @@
 import {createReadClient} from '../src/client.js';
 import {createBoundedTransport} from '../src/transport.js';
 import {reconcileBudgetDocument} from '../src/snapshot.js';
+import {majorUnits} from '../src/money.js';
 const summary={mode:'personal-developer-schema-evaluation',readOnly:true,requests:[]};
 let token=''; let client;
 const schema = value => value && typeof value === 'object' && !Array.isArray(value) ? Object.fromEntries(Object.entries(value).map(([key,item])=>[key,Array.isArray(item)?'array':item===null?'null':typeof item])) : typeof value;
 try {
   for await (const chunk of process.stdin) { token+=chunk.toString(); if(token.length>16384) throw new Error('Invalid stdin'); }
   token=token.trim(); if(!token) throw new Error('Missing stdin token');
-  const bounded=createBoundedTransport(fetch,{maxBytes:10*1024*1024,timeoutMs:10000});
-  const transport=async(url,options)=>{
-    const response=await bounded(url,options);
+  const transport=createBoundedTransport(async(url,options)=>{
+    const response=await fetch(url,options);
     const path=new URL(url).pathname.replace(/\/projects\/[^/]+/,'/projects/{id}');
     summary.requests.push({path,status:response.status});
     return response;
-  };
+  },{maxBytes:5*1024*1024,timeoutMs:10000});
   const get=async path=>{
     const response=await transport(`https://next-api.saturation.io/v1${path}`,{method:'GET',headers:{Authorization:`Bearer ${token}`}});
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -57,7 +57,7 @@ try {
     observation.totalValueSchema=schema(document.totals[phase.id]);
     const groups=new Map();
     for(const row of document.lines) { const group=groups.get(row.parentId)??[]; group.push(row); groups.set(row.parentId,group); }
-    const toUnits=value=>Number.isFinite(value)?BigInt(Math.round(value*10000)):null;
+    const toUnits=value=>{ try { return majorUnits(value); } catch { return null; } };
     observation.arithmeticDiagnostics={mismatchedGroups:0,rootMismatch:false,parentMismatchCount:0,differenceEqualsParentFringe:0,differenceEqualsParentBase:0,parentHasEditablePhaseData:0};
     for(const [parentId,rows] of groups) {
       const parent=parentId===null?null:document.lines.find(row=>row.id===parentId);

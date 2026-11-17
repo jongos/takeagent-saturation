@@ -1,3 +1,5 @@
+import {isBoundedTransport} from './transport.js';
+
 const BASE = 'https://next-api.saturation.io/v1';
 const id = value => {
   if (typeof value !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(value)) throw new Error('Invalid identifier');
@@ -8,7 +10,7 @@ const id = value => {
 export function createReadClient({ token, workspaceId, projectId, transport, maxPages = 20, pageSize = 100 }) {
   id(workspaceId); id(projectId);
   if (typeof token !== 'string' || !token || /[\r\n]/.test(token)) throw new Error('Invalid token');
-  if (typeof transport !== 'function' || !Number.isInteger(maxPages) || maxPages < 1 || maxPages > 100 || !Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) throw new Error('Invalid configuration');
+  if (!isBoundedTransport(transport) || !Number.isInteger(maxPages) || maxPages < 1 || maxPages > 100 || !Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) throw new Error('Invalid configuration');
   let connected = true;
   const controller = new AbortController();
   async function get(path) {
@@ -30,7 +32,7 @@ export function createReadClient({ token, workspaceId, projectId, transport, max
   }
   async function authorize() {
     const me = await get('/me');
-    if (!Array.isArray(me.workspaces) || me.workspaces.length !== 1 || me.workspaces[0].workspaceId !== workspaceId) throw new Error('Workspace mismatch');
+    if (!Array.isArray(me.workspaces) || !me.workspaces.some(workspace => workspace.workspaceId === workspaceId)) throw new Error('Workspace mismatch');
   }
   return {
     async budgetDocument() {

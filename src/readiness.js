@@ -25,6 +25,13 @@ const issueDefinitions = Object.freeze({
   INTERNAL_REVIEW_FAILURE:['The review could not be completed.','Investigate the adapter using sanitized diagnostics; no snapshot was accepted.']
 });
 export const readinessCodes = Object.freeze(Object.keys(issueDefinitions));
+const trustedReviewContext = Symbol('trustedReviewContext');
+
+/** Host-only factory; review flags must not be accepted from untrusted request input. */
+export function createTrustedReviewContext(context) {
+  if (!context || typeof context !== 'object' || Array.isArray(context)) throw new Error('Invalid review context');
+  return Object.freeze({...context, [trustedReviewContext]: true});
+}
 const fields = ['originalBudget','revisedBudget','actuals','openCommitments','estimateToComplete','estimatedFinalCost'];
 function issue(code,details={}) {
   if (!Object.hasOwn(issueDefinitions,code)) code='INTERNAL_REVIEW_FAILURE';
@@ -43,7 +50,8 @@ function blocked(code,details) {
 /** Context review flags must be set by an authorized host, never trusted from a browser. */
 export function prepareBudgetReview(document,context) {
   try {
-    if (!context||context.sourceScopeReviewed!==true) return blocked('SOURCE_SCOPE_REVIEW_REQUIRED');
+    if (!context?.[trustedReviewContext]) return blocked('SOURCE_SCOPE_REVIEW_REQUIRED');
+    if (context.sourceScopeReviewed!==true) return blocked('SOURCE_SCOPE_REVIEW_REQUIRED');
     if (context.phaseMappingReviewed!==true) return blocked('PHASE_MAPPING_REVIEW_REQUIRED');
     if (typeof context.expectedCurrency!=='string'||!/^[A-Z]{3}$/.test(context.expectedCurrency)) return blocked('PROJECT_CURRENCY_REQUIRED');
     const preview=reconcileBudgetDocument(document,context);

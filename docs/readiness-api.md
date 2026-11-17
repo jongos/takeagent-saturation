@@ -16,6 +16,8 @@ Every status has `financialAcceptance: false`, `canApply: false` and `readOnly: 
 
 Resolve these values in the authorized host: `workspaceId`, `projectId`, immutable `revision`, ISO `importedAt`, trusted `now`, explicit `phaseMap`, and `expectedCurrency` from the intended project. Set `sourceScopeReviewed: true` only after checking that the source belongs to the selected external project, and `phaseMappingReviewed: true` only after reviewing phase meaning/filtering. Optional `maxAgeDays` defaults to seven.
 
+Build the context with `createTrustedReviewContext(...)` on the server immediately before calling `prepareBudgetReview` or `reviewBudgetDocumentBytes`. Plain objects or request-serialized copies are rejected even when review booleans are true.
+
 These booleans are review assertions, not authentication. Never accept them or tenant/project/currency ownership from an untrusted browser request. The host must derive the authenticated tenant, project authorization, entitlement and external connection from its own session/database on every request, and recheck before persistence. An offline budget document does not contain a verifiable project ownership proof. Its returned provenance explicitly says `projectIdentityBasis: "host-reviewed-mapping"` and `vendorProjectOwnershipVerified: false`; its SHA-256 identifies bytes, not identity or authorization.
 
 ## Stable issue codes
@@ -50,13 +52,12 @@ Diagnostic transaction pagination locks the first reported count and rejects lat
 `examples/synthetic-budget.json` is an invented full account/line/credit document, not a vendor export. The host can pass its UTF-8 bytes to `reviewBudgetDocumentBytes(bytes, context)` from the package root. The library ceiling is 5 MiB; apply a smaller platform input limit and independently bound rendered/returned output.
 
 ```js
-const context = {
+const result = reviewBudgetDocumentBytes(bytes, createTrustedReviewContext({
   workspaceId: 'synthetic_workspace', projectId: 'synthetic_project', revision: 'r1',
   importedAt: '2026-11-17T10:00:00Z', now: new Date('2026-11-17T11:00:00Z'),
   phaseMap: {originalBudget: 'estimate'}, expectedCurrency: 'USD',
   sourceScopeReviewed: true, phaseMappingReviewed: true
-};
-const result = reviewBudgetDocumentBytes(bytes, context);
+}));
 ```
 
 In a real host, derive authorized workspace/project/currency and current timestamps on the server; review flags require a deliberate mapping review and are not authorization. Do not treat this example's fixed clock or synthetic project as real provenance. Successful results are `ready-for-review`, with `preview.snapshot.costs` and `accounts`; missing categories remain null. Blocked results have `preview: null`. `financialAcceptance` and `canApply` remain false. No credential, network, or vendor account is required. Run `npm test` for the complete synthetic bytes → reconciliation → revision → discrepancy flow.
