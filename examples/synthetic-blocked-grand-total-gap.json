@@ -1,0 +1,17 @@
+{
+  "id": "synthetic_grand_total_gap",
+  "computedAt": "2026-11-17T09:00:00Z",
+  "selection": {},
+  "phases": [
+    {"id": "estimate", "type": "estimate", "isHidden": false}
+  ],
+  "totals": {
+    "estimate": {"amount": 100, "currency": "USD"}
+  },
+  "lines": [
+    {"id": "root_a", "type": "account", "parentId": null, "depth": 0, "accountId": "0100", "values": {"estimate": {"amount": 40, "currency": "USD"}}},
+    {"id": "line_a", "type": "line", "parentId": "root_a", "depth": 1, "accountId": "0110", "values": {"estimate": {"amount": 40, "currency": "USD"}}},
+    {"id": "root_b", "type": "account", "parentId": null, "depth": 0, "accountId": "0200", "values": {"estimate": {"amount": 50, "currency": "USD"}}},
+    {"id": "line_b", "type": "line", "parentId": "root_b", "depth": 1, "accountId": "0210", "values": {"estimate": {"amount": 50, "currency": "USD"}}}
+  ]
+}
