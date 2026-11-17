@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "id": "saturation",
+  "displayName": "Saturation",
+  "status": "development",
+  "liveEnabled": false,
+  "sourceIssue": "https://github.com/jongos/takeagent/issues/57",
+  "repository": "https://github.com/jongos/takeagent-saturation",
+  "capabilities": ["read-only-injected-transport", "workspace-project-scope-checks", "bounded-transaction-pagination", "budget-phase-preview", "account-line-credit-reconciliation", "canonical-cost-snapshot", "revision-comparison", "synthetic-fixtures"],
+  "blockers": [
+    {"category": "vendor", "id": "api-entitlement", "summary": "Confirm customer API entitlement and commercial terms; public plan guidance differs."},
+    {"category": "vendor", "id": "credential-scope", "summary": "Confirm a least-privilege credential route; documented personal tokens inherit user permissions."},
+    {"category": "vendor", "id": "fringe-overlap", "summary": "Validate computed fringe rollup semantics and actual/commitment overlap with a synthetic vendor project."},
+    {"category": "user", "id": "pilot-mapping", "summary": "Select authorized workspace/project and review phase meanings, period/currency basis and intended TakeAgent project."},
+    {"category": "engineering", "id": "host-pilot", "summary": "Integrate authenticated host authorization, token vault, preview UI, retention/deletion and finance-review contract before enabling live use."}
+  ],
+  "documentation": {"blockers": "docs/blockers.md", "hostContract": "docs/host-contract.md", "capabilities": "docs/capabilities.md"}
+}

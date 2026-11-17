@@ -4,7 +4,8 @@ const fields = ['originalBudget', 'revisedBudget', 'actuals', 'openCommitments',
 export function previewTotals(payload, {workspaceId, projectId, revision, phaseMap, now = new Date(), maxAgeDays = 7}) {
   if (![workspaceId, projectId, revision].every(x => typeof x === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(x))) throw new Error('Missing provenance');
   const date = Date.parse(payload.computedAt);
-  if (!Number.isFinite(date) || date > now.getTime() || !Number.isFinite(maxAgeDays) || maxAgeDays < 0) throw new Error('Invalid report date');
+  if (!Number.isFinite(now.getTime()) || !Number.isFinite(date) || date > now.getTime() || !Number.isFinite(maxAgeDays) || maxAgeDays < 0) throw new Error('Invalid report date');
+  if (payload.filter && Object.keys(payload.filter).length) throw new Error('Filtered totals cannot represent a full project');
   if (!payload.totals || typeof payload.totals !== 'object' || !phaseMap || typeof phaseMap !== 'object') throw new Error('Missing totals or mapping');
   const costs = Object.fromEntries(fields.map(field => [field, null]));
   const used = new Set(); const currencies = new Set();
@@ -13,7 +14,7 @@ export function previewTotals(payload, {workspaceId, projectId, revision, phaseM
     const value = payload.totals[phase];
     if (!value || !Number.isFinite(value.amount) || !/^[A-Z]{3}$/.test(value.currency)) throw new Error('Invalid phase amount');
     used.add(phase); currencies.add(value.currency);
-    costs[field] = {amount: value.amount, currency: value.currency, sourcePhaseId: phase};
+    costs[field] = {amount: value.amount, currency: value.currency, unit: 'major', sourcePhaseId: phase};
   }
   if (currencies.size > 1) throw new Error('Mixed currencies require explicit FX reconciliation');
   if (!used.size) throw new Error('Empty phase mapping');

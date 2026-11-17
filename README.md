@@ -1,12 +1,14 @@
 # TakeAgent Saturation capability spike
 
-Private development repository for [TakeAgent issue #57](https://github.com/jongos/takeagent/issues/57). This is an initial, synthetic-tested library, not a deployed integration or completed pilot.
+Private development repository for [TakeAgent issue #57](https://github.com/jongos/takeagent/issues/57). This is a synthetic-tested development library, not a deployed integration or completed pilot. [Machine-readable status](integration-manifest.json): live access disabled.
 
 Run `npm test` with Node 22+. No dependencies, secrets, vendor account, or network are needed.
 
 `src/client.js` implements a bounded GET-only client for identity, selected-project budget totals, and paginated transactions. The host must supply a transport; there is no default live network access. Identity is rechecked on each operation, redirects are blocked, errors exclude provider bodies, and partial/duplicate/cross-project pages fail. `disconnect()` invalidates this in-memory client.
 
 `src/preview.js` creates a deterministic, read-only phase-total preview from an explicit phase map. Missing cost categories stay null; unmapped phases stay visible. Original/revised budget, actuals, commitments, ETC, and EFC remain separate. Credits are preserved; mixed currencies require reconciliation. The fingerprint is a deduplication primitive, not persistent import storage. No finance-plan writes occur.
+
+`src/snapshot.js` reconciles a complete unfiltered budget document with account, line and credit records. It validates every parent/child subtotal and project total using exact four-decimal comparisons, preserves account codes/hierarchy, and creates a canonical cost snapshot. Unsupported fringe records and higher precision fail visibly. Revision comparison detects duplicates, scope mismatch and conflicting revisions. Budget amounts are labeled major units; transaction amounts are integer minor units and are never added to budget actuals.
 
 ## Integration boundary
 
@@ -17,9 +19,9 @@ The eventual TakeAgent host must enforce authenticated tenant/project ownership,
 - Confirm customer entitlement and partner/commercial terms; public pages disagree on supported plans.
 - Confirm least-privilege vendor credentials. Public docs describe personal tokens inheriting user permissions, not proven read-only token scopes. GET-only code does not reduce token privileges.
 - Validate actual endpoint schemas against an authorized synthetic vendor project; strict `projectId` checks intentionally reject records missing identity.
-- Add account-level reconciliation, phase semantics, purchase-order/paid-actual overlap reconciliation and stable revision basis before claiming a canonical cost snapshot.
+- Validate phase semantics, fringe records, purchase-order/paid-actual overlap and source revision basis before a live pilot. Account reconciliation is implemented for the documented supported subset.
 - Add project selection UI, explicit transmission/apply preview, tenant-bound persistence, safe retry/backoff policy and cancellation lifecycle.
 - Add separate funding-gap and cash-timing analysis only with explicit financing/cash-schedule inputs. Budget totals alone cannot prove those gaps.
 - No webhooks, sync scheduling, live access, vendor contact, deployment, payroll or payments are implemented.
 
-See [capability notes](docs/capabilities.md) for field mapping and current sources.
+See [capability notes](docs/capabilities.md), [blockers](docs/blockers.md) and [host integration contract](docs/host-contract.md).
