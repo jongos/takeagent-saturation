@@ -51,3 +51,9 @@ Added `docs/host-release-status.md` linking the deployed TakeAgent CSV/Excel rel
 Owner approved making connector/skill repositories public; visibility is not changed in this commit. Ran gitleaks (all branches/tags) and trufflehog on full git history, plus manual pattern scans: no credentials, keys, `.env` artifacts, or local machine paths in the tree or history. README now documents install/lint/test for outsiders; `.gitignore` covers common local artifacts; package metadata adds description and repository links. A separate LICENSE file remains an owner decision before npm publication.
 
 Validation: `npm ci`, `npm run lint:syntax`, `npm audit --audit-level=high`, and `npm test` passed locally (54/54 on Node 22). No history rewrite, no auth weakening, and no new network or vendor access.
+
+## 2026-11-18 — Adopt the MediaHedge License
+
+At owner approval, replaced implicit proprietary status with the MediaHedge License as the root `LICENSE` file, set `package.json` to `SEE LICENSE IN LICENSE`, and documented the license and TakeAgent Terms linkage in `README.md`. No third-party license notices were changed. No adapter, transport, or integration behavior changed.
+
+Validation: `npm ci`, `npm run lint:syntax`, `npm audit --audit-level=high`, and `npm test` passed locally on Node 22. Hosted CI for this commit is pending. No vendor API calls, credentials, deployment, or production wiring occurred.

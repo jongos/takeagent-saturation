@@ -41,3 +41,7 @@ The eventual TakeAgent host must enforce authenticated tenant/project ownership,
 - No webhooks, sync scheduling, live access, vendor contact, deployment, payroll or payments are implemented.
 
 See [capability notes](docs/capabilities.md), [blockers](docs/blockers.md) and [host integration contract](docs/host-contract.md).
+
+## License
+
+Licensed under the MediaHedge License. Use is permitted only as allowed by the TakeAgent Terms of Service at https://takeagent.ai/terms. See LICENSE.
