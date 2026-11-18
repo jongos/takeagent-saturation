@@ -45,3 +45,9 @@ Validation: `npm ci`, `npm run lint:syntax`, `npm audit --audit-level=high`, and
 ## 2026-11-17 — Record current optional host release
 
 Added `docs/host-release-status.md` linking the deployed TakeAgent CSV/Excel release and explaining the division between shared host file handling and this adapter. Preserved optional installation, no-new-configuration behavior and vendor-access limitations. Refetched origin and verified the existing adapter source was already synchronized. The complete repository suite passed 46/46 tests. This commit changes documentation only; no adapter or deployment change is claimed.
+
+## 2026-11-18 — Adopt the MediaHedge License
+
+At owner approval, replaced implicit proprietary status with the MediaHedge License as the root `LICENSE` file, set `package.json` to `SEE LICENSE IN LICENSE`, and documented the license and TakeAgent Terms linkage in `README.md`. No third-party license notices were changed. No adapter, transport, or integration behavior changed.
+
+Validation: `npm ci`, `npm run lint:syntax`, `npm audit --audit-level=high`, and `npm test` passed locally on Node 22. Hosted CI for this commit is pending. No vendor API calls, credentials, deployment, or production wiring occurred.
