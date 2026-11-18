@@ -45,3 +45,9 @@ Validation: `npm ci`, `npm run lint:syntax`, `npm audit --audit-level=high`, and
 ## 2026-11-17 — Record current optional host release
 
 Added `docs/host-release-status.md` linking the deployed TakeAgent CSV/Excel release and explaining the division between shared host file handling and this adapter. Preserved optional installation, no-new-configuration behavior and vendor-access limitations. Refetched origin and verified the existing adapter source was already synchronized. The complete repository suite passed 46/46 tests. This commit changes documentation only; no adapter or deployment change is claimed.
+
+## 2026-11-18 — Prepare repository for public release
+
+Owner approved making connector/skill repositories public; visibility is not changed in this commit. Ran gitleaks (all branches/tags) and trufflehog on full git history, plus manual pattern scans: no credentials, keys, `.env` artifacts, or local machine paths in the tree or history. README now documents install/lint/test for outsiders; `.gitignore` covers common local artifacts; package metadata adds description and repository links. A separate LICENSE file remains an owner decision before npm publication.
+
+Validation: `npm ci`, `npm run lint:syntax`, `npm audit --audit-level=high`, and `npm test` passed locally (54/54 on Node 22). No history rewrite, no auth weakening, and no new network or vendor access.
