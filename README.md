@@ -1,12 +1,22 @@
 # TakeAgent Saturation capability spike
 
-Private development repository for [TakeAgent issue #57](https://github.com/jongos/takeagent/issues/57). This is a synthetic-tested development library, not a deployed integration or completed pilot. [Machine-readable status](integration-manifest.json): live access disabled.
+Development library for [TakeAgent issue #57](https://github.com/jongos/takeagent/issues/57). This is a synthetic-tested adapter, not a deployed integration or completed pilot. [Machine-readable status](integration-manifest.json): live access disabled.
 
 An authorized [personal developer trial evaluation](docs/personal-schema-evaluation.md) verified GET access and six-page transaction ingestion against the vendor's synthetic demo. Full budget import correctly remains blocked by grand-total and missing-phase-total gaps. This does not establish corporate or commercial entitlement.
 
 The [discrepancy is tracked in issue #1](https://github.com/jongos/takeagent-saturation/issues/1). Development continues through the supported [readiness API](docs/readiness-api.md): parsed-document and bounded offline JSON entries return stable blockers or a minimized reconciled preview. Neither successful reads nor a ready preview imply financial acceptance or permission to apply changes.
 
-Run `npm test` with Node 22+. No dependencies, secrets, vendor account, or network are needed.
+## Install and test
+
+Requires Node 22+.
+
+```bash
+npm ci
+npm run lint:syntax
+npm test
+```
+
+No runtime dependencies, secrets, vendor account, or network are required for the synthetic test suite. CI also runs `npm audit --audit-level=high` on Ubuntu and Windows (see `.github/workflows/test.yml`).
 
 `src/client.js` implements a bounded GET-only client for identity, selected-project budget totals, and paginated transactions. The host must supply a transport; there is no default live network access. Identity is rechecked on each operation, redirects are blocked, errors exclude provider bodies, and partial/duplicate/cross-project pages fail. `disconnect()` invalidates this in-memory client.
 

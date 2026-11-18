@@ -1,1 +1,24 @@
-{"name":"@takeagent/saturation-spike","version":"0.2.0","private":true,"license":"SEE LICENSE IN LICENSE","type":"module","exports":"./src/index.js","scripts":{"test":"node --test","lint:syntax":"node --check scripts/evaluate-personal-schema.mjs && node --check src/client.js && node --check src/dates.js && node --check src/errors.js && node --check src/index.js && node --check src/money.js && node --check src/preview.js && node --check src/readiness.js && node --check src/snapshot.js && node --check src/transport.js"},"engines":{"node":">=22"}}
+{
+  "name": "@takeagent/saturation-spike",
+  "version": "0.2.0",
+  "description": "Read-only TakeAgent adapter spike for Saturation budget reconciliation (synthetic-tested; live access disabled).",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jongos/takeagent-saturation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jongos/takeagent-saturation/issues"
+  },
+  "homepage": "https://github.com/jongos/takeagent-saturation#readme",
+  "exports": "./src/index.js",
+  "scripts": {
+    "test": "node --test",
+    "lint:syntax": "node --check scripts/evaluate-personal-schema.mjs && node --check src/client.js && node --check src/dates.js && node --check src/errors.js && node --check src/index.js && node --check src/money.js && node --check src/preview.js && node --check src/readiness.js && node --check src/snapshot.js && node --check src/transport.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
