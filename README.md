@@ -1,10 +1,10 @@
 # TakeAgent Saturation capability spike
 
-Development library for [TakeAgent issue #57](https://github.com/jongos/takeagent/issues/57). This is a synthetic-tested adapter, not a deployed integration or completed pilot. [Machine-readable status](integration-manifest.json): live access disabled.
+Development library for the [Saturation integration](https://takeagent.ai/integrations/saturation). This is a synthetic-tested adapter, not a deployed integration or completed pilot. [Machine-readable status](integration-manifest.json): live access disabled.
 
-An authorized [personal developer trial evaluation](docs/personal-schema-evaluation.md) verified GET access and six-page transaction ingestion against the vendor's synthetic demo. Full budget import correctly remains blocked by grand-total and missing-phase-total gaps. This does not establish corporate or commercial entitlement.
+An authorized [personal developer trial evaluation](docs/personal-schema-evaluation.md) verified GET access and six-page transaction ingestion against the vendor's synthetic demo. Full budget import correctly remains blocked by grand-total and missing-phase-total deficits. This does not establish corporate or commercial entitlement.
 
-The [discrepancy is tracked in issue #1](https://github.com/jongos/takeagent-saturation/issues/1). Development continues through the supported [readiness API](docs/readiness-api.md): parsed-document and bounded offline JSON entries return stable blockers or a minimized reconciled preview. Neither successful reads nor a ready preview imply financial acceptance or permission to apply changes.
+The [observed discrepancy is documented on the integrations page](https://takeagent.ai/integrations/saturation). Development continues through the supported [readiness API](docs/readiness-api.md): parsed-document and bounded offline JSON entries return stable blockers or a minimized reconciled preview. Neither successful reads nor a ready preview imply financial acceptance or permission to apply changes.
 
 ## Install and test
 
@@ -16,7 +16,7 @@ npm run lint:syntax
 npm test
 ```
 
-No runtime dependencies, secrets, vendor account, or network are required for the synthetic test suite. CI also runs `npm audit --audit-level=high` on Ubuntu and Windows (see `.github/workflows/test.yml`).
+No runtime dependencies, secrets, vendor account, or network are required for the synthetic test suite. CI runs the same checks on Node 22 and 24 (see `.github/workflows/test.yml`), including `npm audit --audit-level=high`.
 
 `src/client.js` implements a bounded GET-only client for identity, selected-project budget totals, and paginated transactions. The host must supply a transport; there is no default live network access. Identity is rechecked on each operation, redirects are blocked, errors exclude provider bodies, and partial/duplicate/cross-project pages fail. `disconnect()` invalidates this in-memory client.
 
@@ -37,7 +37,7 @@ The eventual TakeAgent host must enforce authenticated tenant/project ownership,
 - Validate actual endpoint schemas against an authorized synthetic vendor project; strict `projectId` checks intentionally reject records missing identity.
 - Validate phase semantics, fringe records, purchase-order/paid-actual overlap and source revision basis before a live pilot. Account reconciliation is implemented for the documented supported subset.
 - Add project selection UI, explicit transmission/apply preview, tenant-bound persistence, safe retry/backoff policy and cancellation lifecycle.
-- Add separate funding-gap and cash-timing analysis only with explicit financing/cash-schedule inputs. Budget totals alone cannot prove those gaps.
+- Add separate gap financing and cash-timing shortfall analysis only with explicit financing/cash-schedule inputs. Budget totals alone cannot prove those deficits.
 - No webhooks, sync scheduling, live access, vendor contact, deployment, payroll or payments are implemented.
 
 See [capability notes](docs/capabilities.md), [blockers](docs/blockers.md) and [host integration contract](docs/host-contract.md).

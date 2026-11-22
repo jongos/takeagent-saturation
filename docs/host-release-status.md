@@ -2,9 +2,9 @@
 
 Saturation is an optional, independently installed skill at https://takeagent.ai/skills.
 
-CSV and values-only XLSX file previews are available through the website and the existing authorized agent tools skills.inspectFile followed by skills.previewFile. Users inspect the worksheet/header row, review column mappings and report details, and confirm scope before reconciliation. They do not prepare JSON or new configuration files.
+CSV and values-only XLSX file previews are available through the website and through existing authorized agent file-inspection workflows (inspect, then preview). Users inspect the worksheet/header row, review column mappings and report details, and confirm scope before reconciliation. They do not prepare JSON or new configuration files.
 
-Shared website/agent file handling belongs to [jongos/takeagent](https://github.com/jongos/takeagent), not a duplicate implementation in this adapter repository. The release is [PR #77](https://github.com/jongos/takeagent/pull/77), merged as `d6bc6e4e80ee3b9c9b412783d4e58ecfd644da8f`, following the four-skill release in [PR #76](https://github.com/jongos/takeagent/pull/76). The source and instructions are in `src/lib/skill-files.ts`, `src/lib/tabular-skill-preview.ts`, `src/lib/agent-skill-tools.ts` and `docs/optional-skills.md` in the host repository.
+Shared website and agent file handling for tabular imports lives in the [TakeAgent product](https://takeagent.ai/integrations), not as a duplicate implementation in this adapter repository. Public integration documentation at https://takeagent.ai/integrations/saturation describes optional skills and host release status alongside this adapter.
 
 No vendor API credentials, new environment variables or database migration are required for this host release. Existing agent authorization, plan and usage rules apply. Skills remain off until explicitly added and removable independently. Selected-file previews do not automatically synchronize vendor accounts, establish financing, persist uploaded reports or alter saved finance plans. Native export certification and direct API access remain subject to the repository's documented vendor blockers.
 

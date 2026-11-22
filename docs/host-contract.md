@@ -24,7 +24,7 @@ Show source, as-of/import dates, stale state, revision, source line/account path
 
 The user must approve any saved-project mutation through existing explicit apply controls. Bind consent to the exact fingerprint and destination project version. Recheck ownership, entitlement, mapping, fingerprint and destination version atomically at apply time. Unique import keys must include tenant, connection, external project and fingerprint. Do not deduplicate globally across tenants. `compareSnapshots` reports duplicate/new revision and cost changes, rejects scope/revision conflicts, and never mutates a finance plan; it accepts only server-created trusted snapshots.
 
-Cost overrun may be computed against a reviewed budget. Funding gap requires separate financing status/evidence; cash-timing gap requires a separate dated cash schedule. Neither can be inferred solely from these snapshots.
+Cost overrun may be computed against a reviewed budget. Gap financing requires separate financing status/evidence; a cash-timing shortfall requires a separate dated cash schedule. Neither can be inferred solely from these snapshots.
 
 ## Retention and failure
 

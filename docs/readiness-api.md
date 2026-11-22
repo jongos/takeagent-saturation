@@ -30,7 +30,7 @@ These booleans are review assertions, not authentication. Never accept them or t
 - `CURRENCY_MISMATCH`, `AMOUNT_UNSUPPORTED`, `HIERARCHY_INVALID`: source is outside the supported reconciliation profile.
 - `INTERNAL_REVIEW_FAILURE`: unexpected implementation error; message/body/details are not exposed.
 
-Issue messages and next steps are static and omit imported descriptions, source IDs, amounts, credentials and host-local file paths. `SATURATION_GRAND_TOTALS_001` is an opaque developer reference for the observed discrepancy tracked in [issue #1](https://github.com/jongos/takeagent-saturation/issues/1). Keep that internal link in developer tooling; do not inject it into public product messages.
+Issue messages and next steps are static and omit imported descriptions, source IDs, amounts, credentials and host-local file paths. `SATURATION_GRAND_TOTALS_001` is an opaque developer reference for the observed discrepancy documented on the [Saturation integration page](https://takeagent.ai/integrations/saturation). Keep extended traceability in developer tooling; do not inject private tracker URLs into public product messages.
 
 ## Lower-level APIs
 
