@@ -1,6 +1,6 @@
 # Pilot blockers
 
-Status: development; production live access disabled. An explicitly authorized personal developer trial evaluation has now verified GET access and synthetic-demo transaction pagination; see [schema evaluation](personal-schema-evaluation.md). No corporate/customer data, API writes, vendor contact or deployment was involved. Full budget import remains blocked by observed grand-total reconciliation and missing-phase-total gaps.
+Status: development; production live access disabled. An explicitly authorized personal developer trial evaluation has now verified GET access and synthetic-demo transaction pagination; see [schema evaluation](personal-schema-evaluation.md). No corporate/customer data, API writes, vendor contact or deployment was involved. Full budget import remains blocked by observed grand-total reconciliation and missing-phase-total deficits.
 
 Revisit the observed discrepancy in [GitHub issue #1](https://github.com/jongos/takeagent-saturation/issues/1). Supported development can continue through the typed readiness/offline entry without accepting that demo as a reconciled financial snapshot.
 
@@ -23,7 +23,7 @@ Revisit the observed discrepancy in [GitHub issue #1](https://github.com/jongos/
 - Host authentication, tenant/project ownership, entitlement and token-vault integration per [host contract](host-contract.md).
 - Preview UI and approved import persistence with optimistic concurrency; immutable source evidence and tenant-bound duplicate index.
 - Vendor fixtures for fringe/FX/PO overlap before expanding the supported profile. Unsupported precision above four decimals is currently rejected.
-- Account-level downstream finance-review mapping. Cost overruns alone do not establish funding or cash-timing gaps.
+- Account-level downstream finance-review mapping. Cost overruns alone do not establish funding deficits or cash-timing shortfalls.
 - Production retention, durable token deletion and approved retry policy. Use the supplied bounded transport; any custom replacement must enforce the same byte/deadline, abort and redirect restrictions.
 - Browser, cross-tenant and real-host end-to-end validation. Library tests do not certify these missing host controls.
 

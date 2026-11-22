@@ -4,7 +4,7 @@
   "displayName": "Saturation",
   "status": "development",
   "liveEnabled": false,
-  "sourceIssue": "https://github.com/jongos/takeagent/issues/57",
+  "sourceIssue": "https://takeagent.ai/integrations/saturation",
   "repository": "https://github.com/jongos/takeagent-saturation",
   "capabilities": ["read-only-injected-transport", "byte-and-time-bounded-json-transport", "workspace-project-scope-checks", "bounded-transaction-pagination", "budget-phase-preview", "account-line-credit-reconciliation", "canonical-cost-snapshot", "typed-review-readiness", "bounded-offline-json-review", "revision-comparison", "synthetic-fixtures"],
   "blockers": [
